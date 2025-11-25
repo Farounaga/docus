@@ -1,0 +1,197 @@
+---
+title: Outil d'analyse de tickets
+description: Analyse automatisée avancée des tickets Zendesk avec IA, embeddings, clustering et pipeline de données.
+---
+
+# Projet 1 – Outil d’analyse de tickets
+
+## Contexte
+
+Chez **SYADEM**, une grande partie du travail quotidien repose sur la gestion des tickets de support liés aux plateformes de vaccination MesVaccins et Colibri. Le volume élevé de demandes (ARS, établissements scolaires, professionnels de santé, utilisateurs finaux) génère un ensemble massif de données qui, jusqu’ici, n’était pas exploité de manière systématique.
+
+L’objectif du projet est de transformer cette masse brute en **information exploitable**, en automatisant :
+
+- l’extraction,
+- le nettoyage,
+- l’analyse,
+- la classification thématique,
+- la détection des anomalies,
+- la création de résumés automatiques,
+- la recherche des tickets similaires,
+- la génération de statistiques.
+
+Ce projet combine **Ruby**, **Python**, de l’**IA**, des **embeddings vectoriels**, des techniques de **vectorisation** et de **clustering**  et une pipeline complète de traitement des données.
+
+---
+
+## Objectifs du projet
+
+- Centraliser l’ensemble des tickets (API ou exports NDJSON).
+- Nettoyer et normaliser toutes les données textuelles, tags et dates.
+- Transformer le texte des tickets en **vecteurs haute dimension** via embeddings.
+- Détecter automatiquement les thèmes récurrents et les clusters.
+- Identifier les doublons et tickets similaires via similarité cosinus.
+- Générer des **résumés automatiques** avec un LLM.
+- Construire une base évolutive de sujets liés aux tickets.
+- Fournir des statistiques claires pour prioriser les actions.
+
+---
+
+## Pipeline complet
+
+Le système repose sur quatre étapes majeures :
+
+---
+
+### 1. Extraction des tickets
+
+La majorité des données provient de fichiers XML exportés depuis le site (batch offline).  
+Certaines informations complémentaires sont récupérées via l’API Zendesk pour compléter les métadonnées.
+
+Champs extraits depuis les XML :
+- id
+- sujet
+- description
+- commentaires
+- tags
+- date de création
+- auteur (id)
+
+Enrichissement API (sélectif) :
+- id autheur
+- rôle (utilisateur, agent, admin)
+- nom de l’auteur
+
+```ruby
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+---
+
+### 2. Normalisation & nettoyage
+
+Pour rendre les tickets exploitables, une chaîne de nettoyage structurée est appliquée afin de réduire le bruit et préparer des données cohérentes pour les embeddings et le clustering.
+
+- Suppression du HTML : conversion en texte brut pour éviter le poids inutile des balises et garantir une tokenisation homogène.
+- Retrait des signatures et disclaimers : détection par motifs (regex, n-grammes récurrents) pour éliminer les segments non informatifs (agents, robots, notifications).
+- Filtrage des réponses automatiques Zendesk : exclusion des accusés de réception et messages système qui gonflent artificiellement le volume.
+- Correction des incohérences : nettoyage des espaces multiples, encodages erronés, doublons textuels et caractères parasites (zero-width, BOM).
+
+Chaque étape réduit la variance inutile et améliore la qualité sémantique des vecteurs, augmentant la précision des similarités, du clustering et des statistiques dérivées.
+
+```ruby
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+---
+
+### 3. Analyse IA : embeddings, similarité, clustering
+
+C’est la partie la plus avancée du projet, entièrement basée sur une analyse IA exécutée en local via **Ollama**, garantissant confidentialité et performance.
+
+#### Embeddings vectoriels (Ollama + mxbai-embed-large)
+
+Chaque ticket est converti en **vecteur haute dimension** grâce au modèle d’embeddings **`mxbai-embed-large`** exécuté localement via Ollama.
+
+Ce modèle est spécialisé dans :
+
+- la compréhension sémantique fine,
+- la détection de similarités textuelles,
+- l’analyse de tickets courts ou bruités,
+- la reconstruction de thématiques récurrentes même sans tags.
+
+L’usage d’Ollama permet :
+
+- un traitement local sécurisé (aucune donnée ne sort de SYADEM),
+- une grande rapidité de génération,
+- l’absence totale de coût API,
+- la vectorisation de milliers de tickets en continu.
+
+```python
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+#### Clustering intelligent
+
+Clustering automatique via KMeans
+
+```python
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+#### Résumés automatiques IA
+
+Chaque cluster reçoit un résumé généré par un LLM :
+
+```python
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+---
+
+### 4. Analyse statistique & rapports
+
+L’outil produit :
+
+- histogrammes temporels,
+- détection des pics,
+- stats par tag,
+- problèmes récurrents par campagne,
+- heatmaps,
+- export CSV/JSON adaptés.
+
+```python
+# le code arrive plus tard après discution avec l'entreprise
+```
+
+---
+
+## Fonctionnalités principales
+
+- Regroupement automatique par thématique.
+- Résumés automatiques lisibles et concis.
+- Détection des tickets similaires (80%+).
+- Base solide pour un futur dashboard FastAPI.
+
+---
+
+## Technologies utilisées
+
+### Langages
+- Ruby — extraction, normalisation, embeddings (Ollama API), similarité cosinus, clustering (Rumale/KMeans), résumés LLM, statistiques & rapports.
+
+### IA
+- Llama pour résumés.
+- mxbai pour embeddings.
+- Clustering KMeans.
+
+### Données
+
+- XML Zendesk, API Zendesk.
+
+---
+
+## Valeur ajoutée pour SYADEM
+
+- réduction drastique du temps d’analyse,
+- détection immédiate des problèmes récurrents,
+- meilleure priorisation pour les équipes de développement,
+- vision claire de l’activité du support,
+- outil évolutif utilisable par toutes les équipes.
+
+---
+
+## Évolutions prévues
+
+- Dashboard interne basé sur FastAPI.
+- Analyse en temps réel via Webhooks Zendesk.
+- Modèle de classification supervisée interne.
+- Génération automatique de rapports mensuels.
+
+---
+
+## Conclusion
+
+Ce projet démontre une application avancée de l’IA et de l’ingénierie des données au sein d’un contexte réel de support technique.  
+Il transforme un flux massif de tickets en une **source d’informations stratégique**, permettant d’améliorer la qualité, la rapidité et l’efficacité du support SYADEM.
+
