@@ -54,17 +54,23 @@ export default function Home() {
             <h1>Bienvenue</h1>
             <p>Voici mon portfolio développé avec Docusaurus</p>
             <div className={styles.buttons}>
-            <Link
-              className="button button--secondary button--lg"
-              to="/blog">
-              Voir le blog
-            </Link>
 
             <Link
               className="button button--primary button--lg"
               to="/docs/presentation/introduction">
               Présentation
             </Link>
+            <Link
+              className="button button--secondary button--lg"
+              to="/blog">
+              Voir ma veille
+            </Link>
+            <Link
+              className="button button--secondary button--lg"
+              to="/contact">
+              Me contacter
+            </Link>
+           
           </div>
           </div>
 
